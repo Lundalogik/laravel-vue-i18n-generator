@@ -1,8 +1,9 @@
 <?php
 
 use MartinLindhe\VueInternationalizationGenerator\Generator;
+use PHPUnit\Framework\TestCase;
 
-class GenerateTest extends \PHPUnit_Framework_TestCase
+class GenerateTest extends TestCase
 {
     private function generateLocaleFilesFrom(array $arr)
     {
