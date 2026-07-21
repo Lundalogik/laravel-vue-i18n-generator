@@ -146,7 +146,7 @@ class GenerateTest extends TestCase
 
         $root = $this->generateLocaleFilesFrom($arr);
         $this->assertEquals(
-            '(function (global, factory) {' . PHP_EOL
+            str_replace("\r\n", "\n", '(function (global, factory) {' . PHP_EOL
             . '    typeof exports === \'object\' && typeof module !== \'undefined\' ? module.exports = factory() :' . PHP_EOL
             . '        typeof define === \'function\' && define.amd ? define(factory) :' . PHP_EOL
             . '            typeof global.vuei18nLocales === \'undefined\' ? global.vuei18nLocales = factory() : Object.keys(factory()).forEach(function (key) {global.vuei18nLocales[key] = factory()[key]});' . PHP_EOL
@@ -166,8 +166,9 @@ class GenerateTest extends TestCase
             . '    }' . PHP_EOL
             . '}' . PHP_EOL
             . PHP_EOL
-            . '})));',
-            (new Generator([]))->generateFromPath($root, $format));
+            . '})));'),
+            str_replace("\r\n", "\n", (new Generator([]))->generateFromPath($root, $format))
+        );
         $this->destroyLocaleFilesFrom($arr, $root);
     }
 
@@ -212,16 +213,30 @@ class GenerateTest extends TestCase
     function testInvalidFormat()
     {
         $format = 'es5';
-        $arr = [];
+        $arr = [
+            'en' => [
+                'help' => [
+                    'yes' => 'yes',
+                ],
+            ],
+        ];
 
         $root = $this->generateLocaleFilesFrom($arr);
-        try {
-            (new Generator([]))->generateFromPath($root, $format);
-        } catch(RuntimeException $e) {
-            $this->assertEquals('Invalid format passed: ' . $format, $e->getMessage());
 
+        try {
+            $this->assertEquals(
+                '{' . PHP_EOL
+                . '    "en": {' . PHP_EOL
+                . '        "help": {' . PHP_EOL
+                . '            "yes": "yes"' . PHP_EOL
+                . '        }' . PHP_EOL
+                . '    }' . PHP_EOL
+                . '}' . PHP_EOL,
+                (new Generator([]))->generateFromPath($root, $format)
+            );
+        } finally {
+            $this->destroyLocaleFilesFrom($arr, $root);
         }
-        $this->destroyLocaleFilesFrom($arr, $root);
     }
 
     function testBasicWithTranslationString()

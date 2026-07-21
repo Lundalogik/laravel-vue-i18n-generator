@@ -1,4 +1,6 @@
-<?php namespace MartinLindhe\VueInternationalizationGenerator\Commands;
+<?php
+
+namespace MartinLindhe\VueInternationalizationGenerator\Commands;
 
 use Illuminate\Console\Command;
 
@@ -22,6 +24,7 @@ class GenerateInclude extends Command
 
     /**
      * Execute the console command.
+     *
      * @return mixed
      * @throws \Exception
      */
